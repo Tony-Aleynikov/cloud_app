@@ -1,0 +1,9 @@
+services:
+  cloud:
+    image: cloud_app
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    ports:
+      - "3000:3000"
