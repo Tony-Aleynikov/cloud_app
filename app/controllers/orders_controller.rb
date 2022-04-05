@@ -3,9 +3,19 @@ class OrdersController < ApplicationController
   skip_before_action :verify_authenticity_token
   # GET /orders or /orders.json
   def index
-    @orders = Order.all
-    @users = User.all
-    @users.first
+     # @orders = Order.all
+     @orders = []
+     Order.all.each do |order|
+      #Order.eager_load(:networks,:tags)
+       @orders << {
+         name: order.name,
+         created_at: order.created_at,
+         networks_count: order.networks.length,
+         tags: order.tags.map {|tag| {id: tag.id, name: tag.name}}
+       }
+     end
+ 
+     render json: { orders: @orders }
   end
 
   # GET /orders/1 or /orders/1.json
