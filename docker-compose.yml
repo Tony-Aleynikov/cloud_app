@@ -1,8 +1,8 @@
 services:
-  cloud:
+  app:
     image: cloud_app
     volumes:
-      - .:/app
+      - .:/usr/src
     stdin_open: true
     tty: true
     ports:
