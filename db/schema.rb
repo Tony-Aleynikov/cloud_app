@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_04_174230) do
+ActiveRecord::Schema.define(version: 2022_04_06_180818) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "networks", force: :cascade do |t|
     t.string "name"
@@ -19,8 +22,8 @@ ActiveRecord::Schema.define(version: 2022_04_04_174230) do
   end
 
   create_table "networks_orders", id: false, force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "network_id", null: false
+    t.bigint "order_id", null: false
+    t.bigint "network_id", null: false
   end
 
   create_table "orders", force: :cascade do |t|
@@ -30,19 +33,19 @@ ActiveRecord::Schema.define(version: 2022_04_04_174230) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.json "options"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "orders_tags", id: false, force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "tag_id", null: false
+    t.bigint "order_id", null: false
+    t.bigint "tag_id", null: false
   end
 
   create_table "passport_data", force: :cascade do |t|
     t.integer "series"
     t.integer "number"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_passport_data_on_user_id"

@@ -1,4 +1,4 @@
-services:
+services: 
   app:
     image: cloud_app
     volumes:
@@ -9,3 +9,15 @@ services:
       - "3001:3001"
     environment:
       - PORT=3001
+    depends_on:
+      - db
+
+  db:
+    image: postgres:11.5
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password 
+    volumes:
+      - postgres:/var/lib/postgresql/data
+volumes:
+  postgres:

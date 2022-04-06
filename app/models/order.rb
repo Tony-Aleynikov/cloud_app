@@ -38,7 +38,6 @@ class Order < ApplicationRecord
     def available_parrots?
         user.ballance > cost
     end
-<<<<<<< Updated upstream
 
     # def calculated_price
     #   sdd_price = if options["hdd"]["hdd_type"] == "sas" 
@@ -52,21 +51,6 @@ class Order < ApplicationRecord
     #   cost = price
     # end
 
-=======
-##############################
-    # def calculated_price
-    #     characteristics = self.options
-        
-    #     if characteristics["hdd"] == "sas" 
-    #         characteristics["cpu"].to_i * 1000 + (characteristics["ram"].to_i)/1024 * 150 + characteristics["hdd"]
-    #     elsif characteristics["hdd"] == "sata"
-    #         characteristics["cpu"].to_i * 1000 + (characteristics["ram"].to_i)/1024 * 150 +
-    #     elsif characteristics["hdd"] == "sdd"
-    #         characteristics["cpu"].to_i * 1000 + (characteristics["ram"].to_i)/1024 * 150 +
-    #     end
-    # end
-######################################
->>>>>>> Stashed changes
     # def change_name
     #     # Code to change name before validation
     # end
