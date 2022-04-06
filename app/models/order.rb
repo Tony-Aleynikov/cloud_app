@@ -18,10 +18,10 @@ class Order < ApplicationRecord
     # validates :status,  
     #           inclusion: { in: [2], message: 'no such parrots' },
     #           if: [:status_changed?,:available_parrots?,:started?]
-########################################
+
     # before_update :calculated_price
     # before_create :calculated_price
-    #######################################3
+    
     scope :high_cost, -> { where(cost: 1_000..) }
     scope :vip_failed, -> { failed.high_cost }
     scope :created_before, -> (time) { where('created_at < ?, time')}
@@ -38,19 +38,19 @@ class Order < ApplicationRecord
     def available_parrots?
         user.ballance > cost
     end
-##############################
-    def calculated_price
-        characteristics = self.options
-        
-        if characteristics["hdd"] == "sas" 
-            characteristics["cpu"].to_i * 1000 + (characteristics["ram"].to_i)/1024 * 150 + characteristics["hdd"]
-        elsif characteristics["hdd"] == "sata"
-            characteristics["cpu"].to_i * 1000 + (characteristics["ram"].to_i)/1024 * 150 +
-        elsif characteristics["hdd"] == "sdd"
-            characteristics["cpu"].to_i * 1000 + (characteristics["ram"].to_i)/1024 * 150 +
-        end
-    end
-######################################
+
+    # def calculated_price
+    #   sdd_price = if options["hdd"]["hdd_type"] == "sas" 
+    #                   options["hdd"]["hdd_capacity"].to_i * 300
+    #               elsif options["hdd"]["hdd_type"] == "sata"
+    #                   options["hdd"]["hdd_capacity"].to_i * 200
+    #               elsif options["hdd"]["hdd_type"] == "sdd"
+    #                   options["hdd"]["hdd_capacity"].to_i * 100
+    #               end
+    #   price = options["cpu"].to_i * 1000 + (options["ram"].to_i)/1024 * 150 + ssd_price
+    #   cost = price
+    # end
+
     # def change_name
     #     # Code to change name before validation
     # end
