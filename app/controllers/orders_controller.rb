@@ -3,10 +3,12 @@ class OrdersController < ApplicationController
   skip_before_action :verify_authenticity_token
   # GET /orders or /orders.json
   def index
-    @orders = Order.all
-    #  @orders = Order.limit(params["per_page"]=30).pluck(:id)
-    #  params["page"]
-    
+    # @orders = Order.all
+    params["page"] == nil ? page = 1 : page = params["page"].to_i
+    params["per_page"] == nil ? per_page = 30 : per_page = params["per_page"].to_i
+   
+    @orders = Order.limit(per_page).offset((page-1)*per_page).order('id DESC')
+       
     #  @orders = []
     #  Order.all.each do |order|
     #   #Order.eager_load(:networks,:tags)

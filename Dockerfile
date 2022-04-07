@@ -9,20 +9,7 @@ RUN echo "ru_RU.UTF-8 UTF-8" > /etc/locale.gen && \
   /usr/sbin/update-locale LANG=ru_RU.UTF-8
 ENV LC_ALL ru_RU.UTF-8
 
-ENV PORT=3000
-
-ENV APP_PATH=/usr/src
-WORKDIR $APP_PATH
-
-# устаналиваем гемы, необходимые приложению
-COPY Gemfile* $APP_PATH/
-RUN bundle install
-
-# копируем код приложения
-COPY . .
+WORKDIR /app
 
 # сообщаем другим разработчикам и devopsам о том, на каком порту работает наше приложение
 EXPOSE 3000
-
-# устанавливаем команду по умолчанию
-CMD ["rails", "server", "-b", "0.0.0.0", "-p", PORT]

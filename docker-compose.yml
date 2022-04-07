@@ -1,14 +1,14 @@
-services: 
+services:
   app:
-    image: cloud_app
+    build: .
     volumes:
-      - .:/usr/src
+      - .:/app
+      - bundle:/usr/local/bundle
     stdin_open: true
     tty: true
     ports:
-      - "3001:3001"
-    environment:
-      - PORT=3001
+      - "3000:3000"
+    command: rails server -b 0.0.0.0
     depends_on:
       - db
 
@@ -16,8 +16,11 @@ services:
     image: postgres:11.5
     environment:
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: password 
+      POSTGRES_PASSWORD: password
     volumes:
       - postgres:/var/lib/postgresql/data
+
 volumes:
   postgres:
+  bundle:
+  
