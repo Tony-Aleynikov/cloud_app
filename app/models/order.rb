@@ -44,7 +44,7 @@ class Order < ApplicationRecord
                       options["hdd"]["hdd_capacity"].to_i * 300
                   elsif options["hdd"]["hdd_type"] == "sata"
                       options["hdd"]["hdd_capacity"].to_i * 200
-                  elsif options["hdd"]["hdd_type"] == "sdd"
+                  elsif options["hdd"]["hdd_type"] == "ssd"
                       options["hdd"]["hdd_capacity"].to_i * 100
                   end
       price = options["cpu"].to_i * 1000 + (options["ram"].to_i)/1024 * 150 + hdd_price
