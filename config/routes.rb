@@ -1,24 +1,23 @@
 Rails.application.routes.draw do
+  mount GrapeApi => '/api'
+  mount GrapeSwaggerRails::Engine => '/swagger'
+  
+  root 'orders#calc'
+  
   namespace :admin do
     root 'welcome#index'
   end
-  root 'orders#calc'
-  #get 'orders/calc'
-  #get 'calc', to: 'orders#calc'
-    get 'hello/index'
-  
 
+  resources :groups
+  get 'hello/index'
+  get 'orders/check', to: 'orders#check'
+
+  resource :login, only: [:show, :create, :destroy]#
+  resources :users
+  resources :vms
   resources :orders do
-    member do
-      get 'approve'
-    end
+    get 'approve', on: :member
     get 'first', on: :collection
   end
-
-  resources :users
-  #resources :orders строка 8 (если там есть ордерс, то эта строка не нужна?)
-
-  resource :login, only: [:show, :create, :destroy]
-
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
+#get 'calc', to: 'orders#calc'
