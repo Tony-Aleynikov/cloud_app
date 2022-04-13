@@ -10,10 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_06_180818) do
+ActiveRecord::Schema.define(version: 2022_04_11_163027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "hdds", force: :cascade do |t|
+    t.string "hdd_type"
+    t.integer "size"
+    t.bigint "vm_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["vm_id"], name: "index_hdds_on_vm_id"
+  end
 
   create_table "networks", force: :cascade do |t|
     t.string "name"
@@ -51,6 +66,18 @@ ActiveRecord::Schema.define(version: 2022_04_06_180818) do
     t.index ["user_id"], name: "index_passport_data_on_user_id"
   end
 
+  create_table "projects", force: :cascade do |t|
+    t.string "name"
+    t.string "state"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "projects_vms", id: false, force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "vm_id", null: false
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -61,6 +88,14 @@ ActiveRecord::Schema.define(version: 2022_04_06_180818) do
     t.string "first_name"
     t.string "last_name"
     t.integer "balance"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "vms", force: :cascade do |t|
+    t.string "name"
+    t.integer "cpu"
+    t.integer "ram"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
