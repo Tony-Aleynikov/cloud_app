@@ -87,6 +87,10 @@ class OrdersController < ApplicationController
     render :show
   end
 
+  # def check
+  #   byebug
+  # end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order
