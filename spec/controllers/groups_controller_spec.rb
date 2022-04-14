@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe GroupsController, type: :controller do
 
   describe 'GET #index' do
-  
+
     before(:all) do
       create_list(:group, 5)
     end
@@ -16,7 +16,7 @@ RSpec.describe GroupsController, type: :controller do
       get :index
       expect(response.status).to eq(200)
       # expect(response).to have_http_status(200)
-    end 
+    end
 
     it 'returns an array body' do
       get :index
@@ -35,7 +35,7 @@ RSpec.describe GroupsController, type: :controller do
     end
 
     it 'returns content tupe applicaations/returns' do
-      get :index 
+      get :index
       expect(response.headers["Content-Type"]).to eq("application/json; charset=utf-8")
     end
 
@@ -44,7 +44,6 @@ RSpec.describe GroupsController, type: :controller do
   describe 'GET #show' do
 
     before(:each) do
-
       create(:group, id: 1) #name: 'group_7'
     end
 
@@ -84,7 +83,29 @@ RSpec.describe GroupsController, type: :controller do
      post :create, params: { group: { name: 'foo' } }
      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'name')
     end
-    
+
+  end
+
+  describe 'DELETE #destroy' do
+
+    before(:each) do
+      create(:group, id: 1) #name: 'group_7'
+    end
+
+    after(:each) do
+      Group.destroy_all
+    end
+
+    it "returns a 204 status code if group delete" do
+      delete :destroy, params: { group: { id: 1 }  }
+      expect(response.status).to eq(204)
+    end
+
+    it "empty response.body if group delete" do
+      delete :destroy, params: { group: { id: 1 }  }
+      expect(response.body).to eq("")
+    end
+
   end
 
 end

@@ -6,9 +6,9 @@ class OrdersController < ApplicationController
     # @orders = Order.all
     params["page"] == nil ? page = 1 : page = params["page"].to_i
     params["per_page"] == nil ? per_page = 30 : per_page = params["per_page"].to_i
-   
+
     @orders = Order.limit(per_page).offset((page-1)*per_page).order('id DESC')
-       
+
     #  @orders = []
     #  Order.all.each do |order|
     #   #Order.eager_load(:networks,:tags)
@@ -19,7 +19,7 @@ class OrdersController < ApplicationController
     #      tags: order.tags.map {|tag| {id: tag.id, name: tag.name}}
     #    }
     #  end
- 
+
     #  render json: { orders: @orders }
   end
 
@@ -78,7 +78,7 @@ class OrdersController < ApplicationController
     render json: params
   end
 
-  def calc 
+  def calc
     render plain: "#{rand(0..100)}"
   end
 
@@ -88,7 +88,33 @@ class OrdersController < ApplicationController
   end
 
   # def check
-  #   byebug
+  #   # byebug
+  #   response = Faraday.get('http://possible_orders.srv.w55.ru/')
+  #   equipments = JSON.parse(response.body)["specs"]
+
+  #   result = equipments.any? do |equipment|
+  #     equipment["os"].include?(params["os"]) &&
+  #       equipment["cpu"].include?(params["cpu"].to_i) &&
+  #       equipment["ram"].include?(params["ram"].to_i) &&
+  #       equipment["hdd_type"].include?(params["hdd_type"]) &&
+  #       equipment["hdd_capacity"]["#{params["hdd_type"]}"]["from"].to_i <= params["hdd_capacity"].to_i &&
+  #       equipment["hdd_capacity"]["#{params["hdd_type"]}"]["to"].to_i >= params["hdd_capacity"].to_i
+  #   end
+
+  #   price = Faraday.get( "http://127.0.0.1:3005/price",
+  #     {
+  #      cpu:          params[:cpu],
+  #      ram:          params[:ram],
+  #      hdd_type:     params[:hdd_type],
+  #      hdd_capacity: params[:hdd_capacity]
+  #     }
+  #   )
+  #   # price = price.body.to_i
+  #   # render plain: equipments
+  #   # render plain: params
+  #   # render plain: result
+  #   # render plain: price
+
   # end
 
   private
