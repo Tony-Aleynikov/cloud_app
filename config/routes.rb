@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resources :groups
   get 'hello/index'
   # get 'orders/check', to: 'orders#check'
+  get 'orders/status', to: 'orders#status'
 
   resource :login, only: [:show, :create, :destroy]#
   resources :users

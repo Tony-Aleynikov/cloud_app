@@ -87,6 +87,12 @@ class OrdersController < ApplicationController
     render :show
   end
 
+  def status
+    order = Order.find(params["order_id"])
+    order.update(status: params["status"])
+    render plain: "success"
+  end
+
   # def check
   #   # byebug
   #   response = Faraday.get('http://possible_orders.srv.w55.ru/')
