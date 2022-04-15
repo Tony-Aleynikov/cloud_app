@@ -12,6 +12,7 @@ services:
     depends_on:
       - db
       - calculation_service
+      - redis
     environment:
       REDIS_URL: redis://redis:6379/0
 

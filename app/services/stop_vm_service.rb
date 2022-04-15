@@ -4,7 +4,7 @@ class StopVmService
     puts "Payload: #{payload}"
 
     4.times do
-      putc '.'
+      puts '.'
       sleep 1
     end
     puts '.'
