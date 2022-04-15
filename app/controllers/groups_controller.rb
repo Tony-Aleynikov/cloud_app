@@ -19,6 +19,11 @@ class GroupsController < ApplicationController
         render json: { id: group.id, name: group.name }
     end
 
+    def destroy
+      group = Group.find(params["id"])
+      group.destroy
+    end
+
     private
 
   def group_params

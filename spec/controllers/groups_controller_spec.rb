@@ -44,7 +44,7 @@ RSpec.describe GroupsController, type: :controller do
   describe 'GET #show' do
 
     before(:each) do
-      create(:group, id: 1) #name: 'group_7'
+      create(:group, {id: 1,name: 'group_1' } )
     end
 
     after(:each) do
@@ -58,9 +58,7 @@ RSpec.describe GroupsController, type: :controller do
 
     it 'Если группа есть, то возвращается hash с правильными параметрами' do
       get :show, params: { id: 1 }
-      expect(JSON.parse(response.body)).to eq({'id' => 1, 'name' => 'group_7'})
-      # expected: {:id=>1, :name=>"group_1"}
-      # got: {"id"=>1, "name"=>"group_7"}
+      expect(JSON.parse(response.body)).to eq({'id' => 1, 'name' => 'group_1'})
     end
 
   end
@@ -89,7 +87,7 @@ RSpec.describe GroupsController, type: :controller do
   describe 'DELETE #destroy' do
 
     before(:each) do
-      create(:group, id: 1) #name: 'group_7'
+      create(:group, id: 1)
     end
 
     after(:each) do
@@ -97,12 +95,12 @@ RSpec.describe GroupsController, type: :controller do
     end
 
     it "returns a 204 status code if group delete" do
-      delete :destroy, params: { group: { id: 1 }  }
+      delete :destroy, params: { id: 1 }
       expect(response.status).to eq(204)
     end
 
     it "empty response.body if group delete" do
-      delete :destroy, params: { group: { id: 1 }  }
+      delete :destroy, params: { id: 1 }
       expect(response.body).to eq("")
     end
 
