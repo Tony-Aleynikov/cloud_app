@@ -87,35 +87,58 @@ class OrdersController < ApplicationController
     render :show
   end
 
-  # def check
-  #   # byebug
-  #   response = Faraday.get('http://possible_orders.srv.w55.ru/')
-  #   equipments = JSON.parse(response.body)["specs"]
+  def check
+    #1 проверка логирования
+    if session[:balance] == nil || session[:login] == nil
+      return render json: { result: false,
+                            error: "В текущей сессии нет имени пользователя или баланса"
+                          }, status: 401
+    end
 
-  #   result = equipments.any? do |equipment|
-  #     equipment["os"].include?(params["os"]) &&
-  #       equipment["cpu"].include?(params["cpu"].to_i) &&
-  #       equipment["ram"].include?(params["ram"].to_i) &&
-  #       equipment["hdd_type"].include?(params["hdd_type"]) &&
-  #       equipment["hdd_capacity"]["#{params["hdd_type"]}"]["from"].to_i <= params["hdd_capacity"].to_i &&
-  #       equipment["hdd_capacity"]["#{params["hdd_type"]}"]["to"].to_i >= params["hdd_capacity"].to_i
-  #   end
+    #2 получаем список возможных конфигураций
+    begin
+      response = CheckOrderService.get_data
+    rescue Faraday::Error
+      return render json: { result: false,
+                     error: "Ошибка доступа к внешней системе"
+                   }, status: 503
+    end
 
-  #   price = Faraday.get( "http://127.0.0.1:3005/price",
-  #     {
-  #      cpu:          params[:cpu],
-  #      ram:          params[:ram],
-  #      hdd_type:     params[:hdd_type],
-  #      hdd_capacity: params[:hdd_capacity]
-  #     }
-  #   )
-  #   # price = price.body.to_i
-  #   # render plain: equipments
-  #   # render plain: params
-  #   # render plain: result
-  #   # render plain: price
+    equipments = JSON.parse(response.body)["specs"]
 
-  # end
+    #3 проверка соответсвия
+    conformity_check = CheckOrderService.conformity_check(equipments, params)
+
+    #4 запрашиваем цену у сервиса
+    begin
+      price = CheckOrderService.get_price(params)
+    rescue Faraday::Error
+      return render json: { result: false,
+                            error: "Ошибка доступа к внешней системе"
+                          }, status: 503
+    end
+    #5 проверяем, достаточно ли средств у пользователя
+    sufficiency_check = session[:balance] - price > 0
+    #6 возвращаем статус и json
+    if sufficiency_check == true && conformity_check == true
+      render json: { result: true,
+                     total: price,
+                     balance: session[:balance] ,
+                     balance_after_transaction: session[:balance] - price
+                   }, status: 200
+
+    elsif conformity_check != true
+      render json: { result: false,
+                     error: "Некорректная конфигурация"
+                   }, status: 406
+
+    elsif sufficiency_check != true
+      render json: { result: false,
+                     error: "Недостаточно средств"
+                   }, status: 406
+    end
+
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
