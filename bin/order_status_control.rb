@@ -1,6 +1,7 @@
 require 'bunny'
 require 'json'
 require '../app/services/change_order_status.rb'
+require 'faraday'
 
 connection = Bunny.new('amqp://guest:guest@rabbitmq')
 connection.start

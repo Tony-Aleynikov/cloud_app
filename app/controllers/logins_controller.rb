@@ -1,6 +1,6 @@
 class LoginsController < ApplicationController
   skip_before_action :check_aut, except: [:destroy]
-  
+
   def show
   end
 

@@ -16,6 +16,13 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
 
+  hw9:
+    image: hw9
+    ports:
+     - 3010:3010
+    stdin_open: true
+    tty: true
+
   db:
     image: postgres:11.5
     environment:

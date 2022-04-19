@@ -88,7 +88,7 @@ class OrdersController < ApplicationController
   end
 
   def status
-    order = Order.find(params["order_id"])
+    order = Order.find(params["order_id"].to_i)
     order.update(status: params["status"])
     render plain: "success"
   end
