@@ -87,7 +87,7 @@ class OrdersController < ApplicationController
     render :show
   end
 
-  def status
+  def status #этот экшн для hw9, он выполняется по запросу от hw9
     order = Order.find(params["order_id"].to_i)
     order.update(status: params["status"])
     render plain: "success"

@@ -34,5 +34,6 @@ module CloudApp
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+    config.hosts << "app"
   end
 end

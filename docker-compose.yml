@@ -16,7 +16,7 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
 
-  hw9:
+  hw9: #этот сервис для hw9, из него идет запрос
     image: hw9
     ports:
      - 3010:3010
