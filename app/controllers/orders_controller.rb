@@ -1,6 +1,9 @@
 class OrdersController < ApplicationController
   before_action :set_order, only: %i[ show edit update destroy ]
+  before_action :hw6, only: [:check]
+  rescue_from NotAuthorized, { with: :hw6_1 }
   skip_before_action :verify_authenticity_token
+  skip_before_action :check_aut, only: [:check]
   # GET /orders or /orders.json
   def index
     # @orders = Order.all
@@ -88,56 +91,32 @@ class OrdersController < ApplicationController
   end
 
   def check
-    #1 проверка логирования
-    if session[:balance] == nil || session[:login] == nil
+    if CheckOrderService.check(params) != true
       return render json: { result: false,
-                            error: "В текущей сессии нет имени пользователя или баланса"
-                          }, status: 401
+                     error: "Некорректная конфигурация"
+                   }, status: 406
     end
 
-    #2 получаем список возможных конфигураций
-    begin
-      response = CheckOrderService.get_data
-    rescue Faraday::Error
-      return render json: { result: false,
-                     error: "Ошибка доступа к внешней системе"
-                   }, status: 503
-    end
+    price = CheckOrderService.get_price(params)            #4 запрашиваем цену у сервиса
+    balance_after_transaction = session[:balance] - price  #5 проверяем, достаточно ли средств у пользователя
 
-    equipments = JSON.parse(response.body)["specs"]
-
-    #3 проверка соответсвия
-    conformity_check = CheckOrderService.conformity_check(equipments, params)
-
-    #4 запрашиваем цену у сервиса
-    begin
-      price = CheckOrderService.get_price(params)
-    rescue Faraday::Error
-      return render json: { result: false,
-                            error: "Ошибка доступа к внешней системе"
-                          }, status: 503
-    end
-    #5 проверяем, достаточно ли средств у пользователя
-    sufficiency_check = session[:balance] - price > 0
-    #6 возвращаем статус и json
-    if sufficiency_check == true && conformity_check == true
+    if balance_after_transaction >= 0                      #6 возвращаем статус и json
+      session[:balance] -= price
       render json: { result: true,
                      total: price,
                      balance: session[:balance] ,
-                     balance_after_transaction: session[:balance] - price
-                   }, status: 200
-
-    elsif conformity_check != true
-      render json: { result: false,
-                     error: "Некорректная конфигурация"
-                   }, status: 406
-
-    elsif sufficiency_check != true
+                     balance_after_transaction: balance_after_transaction
+                   }
+    else
       render json: { result: false,
                      error: "Недостаточно средств"
                    }, status: 406
     end
 
+  rescue Faraday::Error
+    return render json: { result: false,
+                   error: "Ошибка доступа к внешней системе"
+                 }, status: 503
   end
 
   private
@@ -151,4 +130,15 @@ class OrdersController < ApplicationController
       params.require(:order).permit(:name, :status, :cost)
     end
 
+    def hw6
+      if session[:balance] == nil || session[:login] == nil
+        raise NotAuthorized
+      end
+    end
+
+    def hw6_1
+      render json: { result: false,
+                              error: "В текущей сессии нет имени пользователя или баланса"
+                            }, status: 401
+    end
 end

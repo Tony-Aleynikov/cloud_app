@@ -1,4 +1,11 @@
 class CheckOrderService
+
+  def self.check(params)
+    response   = get_data #2 получаем список возможных конфигураций
+    equipments = JSON.parse(response.body)["specs"]
+    conformity_check(equipments, params) #3 проверка соответсвия
+  end
+
   def self.get_data
     Faraday.get('http://possible_orders.srv.w55.ru/')
   end
