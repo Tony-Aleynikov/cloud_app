@@ -32,4 +32,32 @@ class CheckOrderService
     )
     price = price.body.to_i
   end
+
+  def self.call(params, session)
+    if CheckOrderService.check(params) != true
+      return { result: { result: false, error: "Некорректная конфигурация" }, status: status: 406 }
+    end
+
+    price = CheckOrderService.get_price(params)            #4 запрашиваем цену у сервиса
+    balance_after_transaction = session[:balance] - price  #5 проверяем, достаточно ли средств у пользователя
+
+    if balance_after_transaction >= 0                      #6 возвращаем статус и json
+      session[:balance] -= price
+      { result: { result: true,
+                  total: price,
+                  balance: session[:balance] ,
+                  balance_after_transaction: balance_after_transaction
+                }, status: 200 }
+    else
+      { result: { result: false,
+                  error: "Недостаточно средств"
+                }, status: status: 406 }
+    end
+
+  rescue Faraday::Error
+    { result: { result: false,
+                error: "Ошибка доступа к внешней системе"
+              }, status: status: 503 }
+  end
+
 end

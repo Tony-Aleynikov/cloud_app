@@ -91,32 +91,9 @@ class OrdersController < ApplicationController
   end
 
   def check
-    if CheckOrderService.check(params) != true
-      return render json: { result: false,
-                     error: "Некорректная конфигурация"
-                   }, status: 406
-    end
+    result = CheckOrderService.call(params, session)
 
-    price = CheckOrderService.get_price(params)            #4 запрашиваем цену у сервиса
-    balance_after_transaction = session[:balance] - price  #5 проверяем, достаточно ли средств у пользователя
-
-    if balance_after_transaction >= 0                      #6 возвращаем статус и json
-      session[:balance] -= price
-      render json: { result: true,
-                     total: price,
-                     balance: session[:balance] ,
-                     balance_after_transaction: balance_after_transaction
-                   }
-    else
-      render json: { result: false,
-                     error: "Недостаточно средств"
-                   }, status: 406
-    end
-
-  rescue Faraday::Error
-    return render json: { result: false,
-                   error: "Ошибка доступа к внешней системе"
-                 }, status: 503
+    render json: result["result"], result["status"]
   end
 
   private
